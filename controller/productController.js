@@ -156,7 +156,6 @@ const createProduct = async (req, res) => {
     
 
         const product = new Product({
-            _id: newProductId.toString(),
             ProName,
             Price,
             RemainQuantity,
