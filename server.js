@@ -18,3 +18,7 @@ app.use("/api", product);
 app.get('/', (req, res) => {
     res.send('Hello World Văn Thành');
 });
+
+app.get('/hello', (req, res) => {
+    res.send('Hello Thànhành');
+})
