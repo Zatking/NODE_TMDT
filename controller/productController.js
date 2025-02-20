@@ -1,8 +1,8 @@
 const { z } = require("zod");
-const Product = require("../models/model").Product;
-const State = require("../models/model").State;
-const Brand = require("../models/model").Brand;
-const Categories = require("../models/model").Categories;
+const Product = require("../models/model").product;
+const State = require("../models/model").state;
+const Brand = require("../models/model").brand;
+const Categories = require("../models/model").categories;
 
 
 const StateSchema = z.object({
@@ -20,7 +20,6 @@ const CreateState = async (req, res) => {
 
         const { StateName } = req.body;
         const newState = new State({
-            _id: newProductId.toString(),
             StateName
         });
         await newState.save();
