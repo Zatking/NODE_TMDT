@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const upload = require('../middleware/multer');
 
 const{
     createProduct,
@@ -10,16 +10,20 @@ const{
     CreateBrand,
     getBrands,
     CreateState,
-    getStates
+    getStates,
+    deleteState,
+    findStatebyID
 }=require('../controller/productController');
 
-router.post('/create', createProduct);
-router.get('/get', getProducts);
+router.post('/create-product', upload.array("Images",5),createProduct);
+router.get('/get-product', getProducts);
 router.post('/create-category', CreateCategories);
 router.get('/get-category', getCategories);
 router.post('/create-brand', CreateBrand);
 router.get('/get-brand', getBrands);
 router.post('/create-state', CreateState);
 router.get('/get-state', getStates);
+router.delete('/delete-state', deleteState);
+router.get('/findsatebyid', findStatebyID);
 
 module.exports = router;
