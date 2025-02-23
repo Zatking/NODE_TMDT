@@ -284,7 +284,7 @@ const findStatebyID = async(req,res)=> {
 }
 }
 
-const createProductWithImageLink = async(req,res) => {
+const createProductWithImageLink = async (req, res) => {
   try {
     // Kiểm tra nếu sản phẩm đã tồn tại
     const existingProduct = await Product.findOne({ ProName: req.body.ProName });
@@ -326,11 +326,11 @@ const createProductWithImageLink = async(req,res) => {
     }
 
     // Destructuring dữ liệu từ request body
-    const { ProName, Price, RemainQuantity, Description } = req.body;
+    const { ProName, Price, RemainQuantity,Images, Description } = req.body;
 
-    
-
-    
+    if(req.body.Images.length === 0){
+      return res.status(400).json({ error: "Vui lòng tải lên ảnh" });
+    }
 
     // Tạo sản phẩm mới
     const newProduct = new Product({
@@ -352,8 +352,10 @@ const createProductWithImageLink = async(req,res) => {
     console.error("Lỗi khi thêm sản phẩm:", error.message);
     res.status(500).json({ error: "Lỗi khi thêm sản phẩm", message: error.message });
   }
-}
+};
+    
 
+    
 
 
 
