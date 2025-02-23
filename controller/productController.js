@@ -307,9 +307,11 @@ const createProductWithImageLink = async (req, res) => {
     const state = await State.findById(req.body.State);
     const brand = await Brands.findById(req.body.Brand);
     const category = await Categories.findById(req.body.Category);
+    console.log("state",state);
+
 
     if (!state) {
-      return res.status(404).json({ error: "Trạng thái không tồn tại" });
+      return res.status(404).json({ error: "Trạng thái không tồn tại" ,state});
     }
     if (!brand) {
       return res.status(404).json({ error: "Thương hiệu không tồn tại" });
