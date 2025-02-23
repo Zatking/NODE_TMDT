@@ -34,6 +34,7 @@ const ProductSchema = new mongoose.Schema({
   State: { type: mongoose.Schema.Types.ObjectId, ref: 'State', required: true },
 })
 
+
 //Models
 const product = mongoose.model('Product', ProductSchema);
 const categories = mongoose.model('Categories', CategoriesSchema);

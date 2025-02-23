@@ -12,7 +12,8 @@ const{
     CreateState,
     getStates,
     deleteState,
-    findStatebyID
+    findStatebyID,
+    createProductWithImageLink
 }=require('../controller/productController');
 
 router.post('/create-product', upload.array("Images",5),createProduct);
@@ -25,5 +26,6 @@ router.post('/create-state', CreateState);
 router.get('/get-state', getStates);
 router.delete('/delete-state', deleteState);
 router.get('/findsatebyid', findStatebyID);
+router.post('/createProduct',createProductWithImageLink)
 
 module.exports = router;

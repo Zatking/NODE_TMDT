@@ -16,10 +16,12 @@ app.listen(3000, () => {'Server is running on port 3000'
 app.use("/api", product);
 
 
+
+
 app.get('/', (req, res) => {
     res.send('Hello World Văn Thành');
 });
 
 app.get('/hello', (req, res) => {
-    res.send('Hello Thànhành');
+    res.send('Hello Thành');
 })
