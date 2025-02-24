@@ -135,7 +135,7 @@ const getCategories = async (req, res) => {
 };
 
 const ProductSchema = z.object({
-  ProductName: z.string().min(1, "Tên sản phẩm phải có ít nhất 1 ký tự"),
+  ProName: z.string().min(1, "Tên sản phẩm phải có ít nhất 1 ký tự"),
   Price:z.number().nonnegative("Giá sản phẩm phải lớn hơn hoặc bằng 0"),
   RemainQuantity: z.number().nonnegative("Số lượng sản phẩm phải lớn hơn hoặc bằng 0"),
   Description: z.string().min(1, "Mô tả sản phẩm phải có ít nhất 1 ký tự"),
