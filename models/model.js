@@ -22,13 +22,15 @@ const CartSchema = new mongoose.Schema({
   Total: { type: Number, required: true },
 })
 
+
 const ProductSchema = new mongoose.Schema({
   ProName: { type: String, required: true },
-  Price: { type:String , required: true },
-  RemainQuantity: { type: String, required: true },
+  Price: { type:Number , required: true },
+  RemainQuantity: { type: Number, required: true },
   SoldQuantity: { type: Number, default: 0 },
   Description: { type: String, required: true },
   Images: [{ type: String, required: true }],
+  Rate: { type: Number,default: 10 },
   Category: { type: mongoose.Schema.Types.ObjectId, ref: 'Categories', required: true },
   Brand: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand', required: true },
   State: { type: mongoose.Schema.Types.ObjectId, ref: 'State', required: true },
