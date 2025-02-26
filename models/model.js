@@ -25,7 +25,6 @@ const StateSchema = new mongoose.Schema({
 })
 
 const CartSchema = new mongoose.Schema({
-ProIDL
 })
 
 
