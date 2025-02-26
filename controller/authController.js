@@ -6,32 +6,42 @@ const User = require("../models/model").user;
 require("dotenv").config();
 
 const registerSchema = z.object({
-    email:z.string().email(),
-    password:z.string().min(8),
-    phone:z.string().min(10).max(11),
-    address:z.string().regex(/^[a-zA-Z0-9\s,'-]*$/),
-    birthday:z.date(),
-})
+  email: z.string().email(),
+  password: z.string().min(8),
+  phone: z.string().min(10).max(11),
+  address: z.string().regex(/^[a-zA-Z0-9\s,'-]*$/),
+  birthday: z.date(),
+});
 
 const register = async (req, res) => {
-  const { email, password,phone,address,birthday } = req.body;
-
-
   try {
-    let user = await User.findOne({ email });
-    if (user) {
-      console.log("User dã tồn tại không thể đăng ký được nữa");
-      res
-        .status(400)
-        .json({ message: "User đã tồn tại không thể đăng ký được nữa" });
+    const existingUser = await User.findOne({  req.body.email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
     }
     const validatedData = registerSchema.parse(req.body);
-    if(validatedData){
-      console.log("Data đã được validate");
+    if (!validatedData) {
+      return res.status(400).json({ message: "Invalid data" });
     }
-    
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+    const phoneNumber = await User.findOne(req.body.phone);
+    if(phoneNumber){
+      return res.status(400).json({ message: "Phone number already exists" });
+    }
+    const date = new Date(req.body.birthday);
+    if(Date.now().getYear() - date.getYear() <18){
+      return res.status(400).json({ message: "Require 18 years old" });
+    }
+    const user = new User({
+        email,
+        password:hashedPassword,
+        phone,
+        address,
+        birthday
+    })
   } catch (err) {
-    console.log(err);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+const login = async (req, res) => {}
