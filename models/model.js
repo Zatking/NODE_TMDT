@@ -1,6 +1,16 @@
 const mongoose = require('mongoose');
 
 
+const UserSchema = new mongoose.Schema({
+  userName: { type: String, required: true },
+  password: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: { type: String, required: true },
+  address: { type: String, required: true },
+  birthDay: { type: Date, required: true },
+})
+
+
 
 const CategoriesSchema = new mongoose.Schema({
   CateName: { type: String, required: true },
@@ -15,11 +25,7 @@ const StateSchema = new mongoose.Schema({
 })
 
 const CartSchema = new mongoose.Schema({
-
-  ProID: { type: String, required: true },
-  Quantity: { type: Number, required: true },
-  Price: { type: Number, required: true },
-  Total: { type: Number, required: true },
+ProIDL
 })
 
 
@@ -42,6 +48,7 @@ const product = mongoose.model('Product', ProductSchema);
 const categories = mongoose.model('Categories', CategoriesSchema);
 const brand = mongoose.model('Brand', BrandSchema);
 const state = mongoose.model('State', StateSchema);
+const user = mongoose.model('User', UserSchema);
 
 
 
@@ -52,6 +59,7 @@ module.exports = {
   categories,
   brand,
   state,
+  user
 }
 
 
