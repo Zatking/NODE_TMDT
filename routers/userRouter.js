@@ -15,3 +15,5 @@ const {
 router.post('/register', register);
 router.post('/login', login);
 router.get('/me', authMiddleware, getInformation);
+
+module.exports = router;

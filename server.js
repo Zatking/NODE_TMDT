@@ -3,7 +3,7 @@ const cors = require('cors');
 const data = require("./data");
 const app = express();
 const product = require('./routers/productRouter');
-
+const user = require('./routers/userRouter');
 
 app.use(cors());
 app.use(express.urlencoded({extended:false}))
@@ -14,6 +14,7 @@ app.listen(3000, () => {'Server is running on port 3000'
 });
 
 app.use("/api", product);
+app.use("/api", user);
 
 
 
