@@ -44,4 +44,22 @@ const register = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {}
+const login = async (req, res) => {
+  const {email, password} = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if(!user){
+      return res.status(400).json({ message: "Email hoặc mật khẩu không đúng" });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if(!isMatch) return res.status(400).json({ message: "Email hoặc mật khẩu không đúng" });
+
+    const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, { expiresIn: process.env.TOKEN_EXPIRES });
+    res.json({access_token: token,token_type: "Bearer"});
+  }catch(err){
+    return res.status(500).json({ message: "Internal server error" });
+  } 
+}
+
+module.exports = { register, login };
