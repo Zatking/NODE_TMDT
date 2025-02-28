@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 
 
 const UserSchema = new mongoose.Schema({
-  userName: { type: String, required: true },
+  username: { type: String, required: true },
   password: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
   address: { type: String, required: true },
-  birthDay: { type: Date, required: true },
+  birthday: { type: Date, required: true },
 })
 
 
@@ -25,7 +25,12 @@ const StateSchema = new mongoose.Schema({
 })
 
 const CartSchema = new mongoose.Schema({
-})
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  items:[{
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    quantity: { type: Number, required: true,default:1 },
+  }]
+},{timestamps:true})
 
 
 const ProductSchema = new mongoose.Schema({
@@ -48,7 +53,7 @@ const categories = mongoose.model('Categories', CategoriesSchema);
 const brand = mongoose.model('Brand', BrandSchema);
 const state = mongoose.model('State', StateSchema);
 const user = mongoose.model('User', UserSchema);
-
+const cart = mongoose.model('Cart', CartSchema);
 
 
 
@@ -58,7 +63,8 @@ module.exports = {
   categories,
   brand,
   state,
-  user
+  user,
+  cart
 }
 
 

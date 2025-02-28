@@ -16,7 +16,11 @@ const{
     createProductWithImageLink,
     findProductByName,
     findProductByPrice,
+    addProductToCart,
+    updateCartItem
+    
 }=require('../controller/productController');
+const authMiddleware = require('../middleware/auth');
 
 router.post('/create-product', upload.array("Images",5),createProduct);
 router.get('/get-product', getProducts);
@@ -31,5 +35,8 @@ router.get('/findsatebyid', findStatebyID);
 router.post('/createProduct',createProductWithImageLink);
 router.get('/findProductByName', findProductByName);
 router.get('/findProductByPrice', findProductByPrice);
+router.post('/addProductToCart',authMiddleware, addProductToCart);
+router.put('/updateCartItem',authMiddleware, updateCartItem);
+
 
 module.exports = router;
