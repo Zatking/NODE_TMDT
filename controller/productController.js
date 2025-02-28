@@ -247,16 +247,40 @@ const getProducts = async (req, res) => {
 };
 
 const updateSchema = z.object({
-  ProName: z.string().min(1, "Tên sản phẩm phải có ít nhất 3 ký tự"),
-  Price: z.string(),
-  RemainQuantity: z.string(),
+  ProName: z.number(),
+  Price: z.number().nonnegative("Giá sản phẩm phải lớn hơn hoặc bằng 0"),
+  RemainQuantity: z
+    .number()
+    .nonnegative("Số lượng sản phẩm phải lớn hơn hoặc bằng 0"),
   SoldQuantity: z.number().default(0),
   Description: z.string().min(10, "Mô tả sản phẩm phải có ít nhất 10 ký tự"),
-  Category: z.string(),
 });
 
 const updateProduct = async (req, res) => {
-  res.send("Update product");
+  try {
+    const product = await Product.findById(req.body.id);
+    if (!product) {
+      return res.status(404).json({ error: "Sản phẩm không tồn tại" });
+    }
+    const validatedData = updateSchema.safeParse(req.body);
+    if (!validatedData.success) {
+      return res.zstatus(400).json({ error: validatedData.error.errors });
+    }
+    const { ProName, Price, RemainQuantity, SoldQuantity, Description } =
+      req.body;
+    const updatedProduct = await Product.findByIdAndUpdate(req.body.id, {
+      ProName,
+      Price,
+      RemainQuantity,
+      SoldQuantity,
+      Description,
+    });
+
+    res.status(200).json({ message: "Cập nhật sản phẩm thành công" , product: updatedProduct});
+  }catch(error){
+    console.log("Lỗi khi cập nhật sản phẩm: ", error);
+    res.status(500).json({ error: "Lỗi khi cập nhật sản phẩm", message: error.message });
+  }
 };
 
 const deleteState = async (req, res) => {
@@ -648,4 +672,6 @@ module.exports = {
   getCart,
   getAllOrders,
   getUserOrders,
+  updateProduct,
+  
 };

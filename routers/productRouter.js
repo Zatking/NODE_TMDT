@@ -21,13 +21,15 @@ const{
     orderProduct,
     getCart,
     getAllOrders,
-    getUserOrders
+    getUserOrders,
+    updateProduct
     
 }=require('../controller/productController');
 const authMiddleware = require('../middleware/auth');
 
 router.post('/create-product', upload.array("Images",5),createProduct);
 router.get('/get-product', getProducts);
+router.put('/update-product', updateProduct);
 router.post('/create-category', CreateCategories);
 router.get('/get-category', getCategories);
 router.post('/create-brand', CreateBrand);
@@ -45,6 +47,7 @@ router.post('/orderProduct',authMiddleware, orderProduct);
 router.get('/getCart',authMiddleware, getCart);
 router.get('/getAllOrders', getAllOrders);
 router.get('/getUserOrders',authMiddleware, getUserOrders);
+
 
 
 
