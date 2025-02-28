@@ -12,6 +12,8 @@ const UserSchema = new mongoose.Schema({
 
 
 
+
+
 const CategoriesSchema = new mongoose.Schema({
   CateName: { type: String, required: true },
 });
@@ -31,6 +33,18 @@ const CartSchema = new mongoose.Schema({
     quantity: { type: Number, required: true,default:1 },
   }]
 },{timestamps:true})
+
+const OrderSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  items:[{
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    quantity: { type: Number, required: true,default:1 },
+    price: { type: Number, required: true },
+  }],
+  totalPrice: { type: Number, required: true },
+  status: { type: String, enum: ["pending", "canceled"], default: "pending" },
+  createdAt: { type: Date, default: Date.now }
+})
 
 
 const ProductSchema = new mongoose.Schema({
@@ -54,6 +68,7 @@ const brand = mongoose.model('Brand', BrandSchema);
 const state = mongoose.model('State', StateSchema);
 const user = mongoose.model('User', UserSchema);
 const cart = mongoose.model('Cart', CartSchema);
+const order = mongoose.model('Order', OrderSchema);
 
 
 
@@ -64,7 +79,8 @@ module.exports = {
   brand,
   state,
   user,
-  cart
+  cart,
+  order
 }
 
 

@@ -3,6 +3,7 @@ const Product = require("../models/model").product;
 const State = require("../models/model").state;
 const Brands = require("../models/model").brand;
 const Categories = require("../models/model").categories;
+const Order = require("../models/model").order;
 const mongoose = require("mongoose");
 const Cart = require("../models/model").cart;
 
@@ -471,6 +472,33 @@ const addProductToCart = async (req, res) => {
   }
 };
 
+const removeProductFromCart = async (req, res) => {
+  try {
+    const userId = req.user.id; // Lấy userId từ token
+    const { productId } = req.body; // Lấy productId từ request
+
+    let cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+      return res.status(404).json({ message: "Giỏ hàng không tồn tại" });
+    }
+
+    const itemIndex = cart.items.findIndex(
+      (item) => item.productId.toString() === productId
+    );
+
+    if (itemIndex === -1) {
+      return res.status(404).json({ message: "Sản phẩm không có trong giỏ hàng" });
+    }
+
+    cart.items.splice(itemIndex, 1); // Xóa sản phẩm khỏi giỏ hàng
+    await cart.save(); // Lưu vào database
+    res.json({ message: "Xóa sản phẩm khỏi giỏ hàng thành công", cart });
+  }catch (error) {
+    res.status(500).json({ message: "Có lỗi xảy ra", error: error.message });
+  }
+}
+
 const updateCartItem = async (req, res) => {
   try {
       const userID = req.user._id;  // Lấy userID từ token
@@ -513,6 +541,91 @@ const updateCartItem = async (req, res) => {
   }
 };
 
+const getCart = async (req, res) => {
+  try {
+      const userID = req.user._id;  // Lấy userID từ token
+      const cart = await Cart.findOne({ userID }).populate('items.productId');
+
+      if (!cart || cart.items.length === 0) {
+          return res.status(404).json({ message: "Giỏ hàng trống" });
+      }
+
+      res.status(200).json({ cart });
+
+  } catch (error) {
+      console.error("Lỗi khi lấy giỏ hàng:", error);
+      res.status(500).json({ error: "Lỗi khi lấy giỏ hàng", message: error.message });
+  }
+}
+
+const orderProduct = async (req, res) => {
+  try{
+    const userId = req.user.id;
+    const cart = await Cart.findOne({userId}).populate('items.productId');
+
+    if(!cart|| cart.items.length === 0){
+      return res.status(400).json({message: "Giỏ hàng trống"});
+    }
+
+    let orderIterms = cart.items.map(item => {
+      return {
+        productId: item.productId._id,
+        quantity: item.quantity,
+        price: item.productId.Price,
+      }
+    })
+
+    let totalPrice = orderIterms.reduce((total, item) => { total+= item.price * item.quantity; return total;}, 0);
+
+    const newOrder = new Order({
+      userId,
+      items: orderIterms,
+      totalPrice,
+      status: "pending",
+      createdAt: new Date()
+    })
+
+    await newOrder.save();
+
+            // Sau khi đặt hàng thành công, xóa giỏ hàng
+    await Cart.findOneAndDelete({ userId });
+
+    res.status(201).json({message: "Đặt hàng thành công", order: newOrder});
+
+
+  }catch(error){
+    console.error("Lỗi khi đặt hàng:", error);
+    res.status(500).json({error: "Lỗi khi đặt hàng", message: error.message});
+  }
+}
+
+const getAllOrders = async (req, res) => {
+  try {
+      const orders = await Order.find().populate("userId", "name email").populate("items.productId", "name price");
+      res.status(200).json({ message: "Danh sách đơn hàng", orders });
+  } catch (error) {
+      console.error("Lỗi khi lấy danh sách đơn hàng:", error);
+      res.status(500).json({ error: "Lỗi khi lấy danh sách đơn hàng", message: error.message });
+  }
+};
+
+const getUserOrders = async (req, res) => {
+  try {
+      const userId = req.user.id; // Lấy user ID từ token
+
+      const orders = await Order.find({ userId }).populate("items.productId", "name price");
+
+      if (orders.length === 0) {
+          return res.status(404).json({ message: "Bạn chưa có đơn hàng nào" });
+      }
+
+      res.status(200).json({ message: "Danh sách đơn hàng của bạn", orders });
+  } catch (error) {
+      console.error("Lỗi khi lấy danh sách đơn hàng:", error);
+      res.status(500).json({ error: "Lỗi khi lấy danh sách đơn hàng", message: error.message });
+  }
+};
+
 module.exports = {
   createProduct,
   getProducts,
@@ -530,4 +643,9 @@ module.exports = {
   findProductByName,
   addProductToCart,
   updateCartItem,
+  removeProductFromCart,
+  orderProduct,
+  getCart,
+  getAllOrders,
+  getUserOrders,
 };

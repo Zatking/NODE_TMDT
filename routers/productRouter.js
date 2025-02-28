@@ -17,7 +17,11 @@ const{
     findProductByName,
     findProductByPrice,
     addProductToCart,
-    updateCartItem
+    updateCartItem,
+    orderProduct,
+    getCart,
+    getAllOrders,
+    getUserOrders
     
 }=require('../controller/productController');
 const authMiddleware = require('../middleware/auth');
@@ -37,6 +41,11 @@ router.get('/findProductByName', findProductByName);
 router.get('/findProductByPrice', findProductByPrice);
 router.post('/addProductToCart',authMiddleware, addProductToCart);
 router.put('/updateCartItem',authMiddleware, updateCartItem);
+router.post('/orderProduct',authMiddleware, orderProduct);
+router.get('/getCart',authMiddleware, getCart);
+router.get('/getAllOrders', getAllOrders);
+router.get('/getUserOrders',authMiddleware, getUserOrders);
+
 
 
 module.exports = router;
