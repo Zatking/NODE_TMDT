@@ -4,6 +4,7 @@ const data = require("./data");
 const app = express();
 const product = require('./routers/productRouter');
 const user = require('./routers/userRouter');
+const admin = require('./routers/adminRouter');
 require('dotenv').config();
 
 
@@ -17,6 +18,8 @@ app.listen(3000, () => {'Server is running on port 3000'
 
 app.use("/api", product);
 app.use("/api", user);
+app.use("/api", admin);
+
 
 
 

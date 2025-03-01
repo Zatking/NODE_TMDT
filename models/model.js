@@ -10,6 +10,12 @@ const UserSchema = new mongoose.Schema({
   birthday: { type: Date, required: true },
 })
 
+const AdminSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  password: { type: String, required: true },
+  email: { type: String, required: true },
+})
+
 
 
 
@@ -69,6 +75,7 @@ const state = mongoose.model('State', StateSchema);
 const user = mongoose.model('User', UserSchema);
 const cart = mongoose.model('Cart', CartSchema);
 const order = mongoose.model('Order', OrderSchema);
+const admin = mongoose.model('Admin', AdminSchema);
 
 
 
@@ -80,7 +87,8 @@ module.exports = {
   state,
   user,
   cart,
-  order
+  order,
+  admin
 }
 
 
