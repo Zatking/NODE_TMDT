@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const mongoose = require('mongoose');
 const uri = process.env.MONGO_URI; // Đọc giá trị từ file .env
+console.log(uri);
 
 if (!uri) {
   console.error("MONGO_URI is not defined in your .env file");

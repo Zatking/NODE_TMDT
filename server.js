@@ -4,6 +4,8 @@ const data = require("./data");
 const app = express();
 const product = require('./routers/productRouter');
 const user = require('./routers/userRouter');
+require('dotenv').config();
+
 
 app.use(cors());
 app.use(express.urlencoded({extended:false}))
