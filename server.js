@@ -26,5 +26,5 @@ app.get('/', (req, res) => {
 });
 
 app.get('/hello', (req, res) => {
-    res.send('Hello Thành' );
+    res.send('Hello Thành 2k4' );
 })

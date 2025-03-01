@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const mongoose = require('mongoose');
 const uri = process.env.MONGO_URI; // Đọc giá trị từ file .env
+console.log(process.env.MONGO_URI);
 console.log(uri);
 
 if (!uri) {
