@@ -79,22 +79,30 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    const admin = await Admin.findOne({ email });
     const user = await User.findOne({ email });
-    if (!user) {
+    if (admin) {
+      const isMatch = await bcrypt.compare(password, admin.password);
+      if (!isMatch)
+        return res.status(400).json({ message: "Mật khẩu không đúng" });
+      const token = jwt.sign({ id: admin._id }, process.env.TOKEN_SECRET, {
+        expiresIn: process.env.TOKEN_EXPIRE,
+      });
+      res.json({ access_token: token, token_type: "Bearer", role: "admin" });
+    } else if (user) {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch)
+        return res.status(400).json({ message: "Mật khẩu không đúng" });
+
+      const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, {
+        expiresIn: process.env.TOKEN_EXPIRE,
+      });
+      res.json({ access_token: token, token_type: "Bearer", role: "user" });
+    } else {
       return res
         .status(400)
         .json({ message: "Email hoặc mật khẩu không đúng" });
     }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res
-        .status(400)
-        .json({ message: "Email hoặc mật khẩu không đúng" });
-
-    const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, {
-      expiresIn: process.env.TOKEN_EXPIRE,
-    });
-    return res.json({ access_token: token, token_type: "Bearer", user: user });
   } catch (err) {
     return res
       .status(500)
