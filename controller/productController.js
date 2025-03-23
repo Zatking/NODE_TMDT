@@ -253,15 +253,19 @@ const updateProduct = async (req, res) => {
     if (!product) {
       return res.status(404).json({ error: "Sản phẩm không tồn tại" });
     }
-     const updateProduct = await Product.findByIdAndUpdate(req.body._id, req.body)
-    res.status(200).json({ message: "Cập nhật sản phẩm thành công", product: updateProduct });
-   
+    const updateProduct = await Product.findByIdAndUpdate(
+      req.body._id,
+      req.body
+    );
+    res.status(200).json({
+      message: "Cập nhật sản phẩm thành công",
+      product: updateProduct,
+    });
   } catch (error) {
     console.error("Lỗi khi cập nhật sản phẩm:", error);
     res
       .status(500)
       .json({ error: "Lỗi khi cập nhật sản phẩm", message: error.message });
-    ;
   }
 };
 
@@ -575,42 +579,38 @@ const getCart = async (req, res) => {
 
 const orderProduct = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const cart = await Cart.findOne({ userId }).populate("items.productId");
+    let {
+      productIds,
+      quantities,
+      TotalPrice,
+      nameCus,
+      phoneCus,
+      addressCus,
+      gender,
+      note,
+    } = req.body;
 
-    if (!cart || cart.items.length === 0) {
-      return res.status(400).json({ message: "Giỏ hàng trống" });
-    }
-
-    let orderIterms = cart.items.map((item) => {
-      return {
-        productId: item.productId._id,
-        quantity: item.quantity,
-        price: item.productId.Price,
-      };
-    });
-
-    let totalPrice = orderIterms.reduce((total, item) => {
-      total += item.price * item.quantity;
-      return total;
-    }, 0);
+    const formattedItems = productIds.map((id, index) => ({
+      productIds: new mongoose.Types.ObjectId(id),
+      quantities: quantities[index] || 1,
+    }));
 
     const newOrder = new Order({
-      userId,
-      items: orderIterms,
-      totalPrice,
-      status: "pending",
-      createdAt: new Date(),
+      items: formattedItems,
+      customer: {
+        name: nameCus,
+        phone: phoneCus,
+        address: addressCus,
+        gender,
+        note,
+      },
+      TotalPrice,
     });
 
     await newOrder.save();
-
-    // Sau khi đặt hàng thành công, xóa giỏ hàng
-    await Cart.findOneAndDelete({ userId });
-
-    res.status(201).json({ message: "Đặt hàng thành công", order: newOrder });
+    res.status(201).json({ message: "success", order: newOrder });
   } catch (error) {
-    console.error("Lỗi khi đặt hàng:", error);
+    console.error("❌ Lỗi khi đặt hàng:", error);
     res.status(500).json({ error: "Lỗi khi đặt hàng", message: error.message });
   }
 };
@@ -623,12 +623,10 @@ const getAllOrders = async (req, res) => {
     res.status(200).json({ message: "Danh sách đơn hàng", orders });
   } catch (error) {
     console.error("Lỗi khi lấy danh sách đơn hàng:", error);
-    res
-      .status(500)
-      .json({
-        error: "Lỗi khi lấy danh sách đơn hàng",
-        message: error.message,
-      });
+    res.status(500).json({
+      error: "Lỗi khi lấy danh sách đơn hàng",
+      message: error.message,
+    });
   }
 };
 
@@ -648,12 +646,10 @@ const getUserOrders = async (req, res) => {
     res.status(200).json({ message: "Danh sách đơn hàng của bạn", orders });
   } catch (error) {
     console.error("Lỗi khi lấy danh sách đơn hàng:", error);
-    res
-      .status(500)
-      .json({
-        error: "Lỗi khi lấy danh sách đơn hàng",
-        message: error.message,
-      });
+    res.status(500).json({
+      error: "Lỗi khi lấy danh sách đơn hàng",
+      message: error.message,
+    });
   }
 };
 
