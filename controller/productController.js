@@ -254,19 +254,15 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ error: "Sản phẩm không tồn tại" });
     }
 
-    const { ProName, Price, RemainQuantity, Description } = req.body;
-
-    // Kiểm tra dữ liệu đầu vào với Zod
-    const validatedData = ProductSchema.safeParse(req.body);
-    if (!validatedData.success) {
-      console.log("Lỗi dữ liệu:", validatedData.error.errors);
-      return res.status(400).json({ error: validatedData.error.errors });
-    }
+    const { ProName, Price, RemainQuantity, Description,Images,State } = req.body;
 
     product.ProName = ProName;
     product.Price = Price;
     product.RemainQuantity = RemainQuantity;
     product.Description = Description;
+    product.Images = Images;
+    product.State = State;
+
 
     await product.save();
     res.status(200).json({ message: "Cập nhật sản phẩm thành công", product });
