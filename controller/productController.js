@@ -249,7 +249,7 @@ const getProducts = async (req, res) => {
 // Hàm update sản phẩm theo ID
 const updateProduct = async (req, res) => {
  try {
-  const product = await.findById(req.params.id);
+  const product = await Product.findById(req.params.id);
   if (!product) {
     return res.status(404).json({ error: "Sản phẩm không tồn tại" });
   }
