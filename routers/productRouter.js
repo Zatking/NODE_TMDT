@@ -23,6 +23,7 @@ const {
   getAllOrders,
   getUserOrders,
   updateProduct,
+  getProductsByCategoryID
 } = require("../controller/productController");
 const authMiddleware = require("../middleware/auth");
 
@@ -46,5 +47,5 @@ router.post("/orderProduct", orderProduct);
 router.get("/getCart", authMiddleware, getCart);
 router.get("/getAllOrders", getAllOrders);
 router.get("/getUserOrders", authMiddleware, getUserOrders);
-
+router.get("/getProductsByCategory/:cate", getProductsByCategoryID);
 module.exports = router;

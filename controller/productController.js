@@ -269,6 +269,24 @@ const updateProduct = async (req, res) => {
   }
 };
 
+
+const deleteProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ error: "Sản phẩm không tồn tại" });
+    }
+    await product.delete();
+    res.status(200).json({ message: "Xóa sản phẩm thành công" });
+  }catch (error) {
+    console.log("Lỗi khi xóa sản phẩm: ", error);
+    res.status(500).json({ error: "Lỗi khi xóa sản phẩm" });
+  }
+}
+
+
+
+
 const deleteState = async (req, res) => {
   try {
     const state = await State.findById(req.params.id);
@@ -309,6 +327,9 @@ const findProductByName = async (req, res) => {
     res.status(500).json({ error: "Lỗi khi tìm sản phẩm" });
   }
 };
+
+
+
 
 const findProductByPrice = async (req, res) => {
   switch (req.body.Price) {
@@ -353,6 +374,20 @@ const findProductByPrice = async (req, res) => {
     }
   }
 };
+
+const getProductsByCategoryID = async (req, res) => {
+ try{
+    const products = await Product.find({Category: req.params.cate});
+    res.status(200).json({products});
+    if(!products){
+      return res.status(404).json({error: "Không tìm thấy sản phẩm"});
+    }
+    } catch (error) {
+    console.log("Lỗi khi lấy sản phẩm: ", error);
+    res.status(500).json({ error: "Lỗi khi lấy sản phẩm" });
+ }
+
+}
 
 const createProductWithImageLink = async (req, res) => {
   try {
@@ -676,4 +711,5 @@ module.exports = {
   getAllOrders,
   getUserOrders,
   updateProduct,
+  getProductsByCategoryID,
 };
