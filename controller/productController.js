@@ -122,6 +122,17 @@ const CreateCategories = async (req, res) => {
   }
 };
 
+const deleteCateByID = async (req, res) => {
+  try {
+    await Categories.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Xóa danh mục thành công" });
+  }
+  catch (error) {
+    console.log("Lỗi khi xóa danh mục: ", error);
+    res.status(500).json({ error: "Lỗi khi xóa danh mục" });
+  }
+}
+
 const getCategories = async (req, res) => {
   try {
     const categories = await Categories.find();
@@ -719,4 +730,5 @@ module.exports = {
   getProductsByCategoryID,
   deleteProduct,
   getOrderByID,
+  deleteCateByID,
 };
