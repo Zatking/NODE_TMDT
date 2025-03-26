@@ -647,8 +647,6 @@ const orderProduct = async (req, res) => {
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
-      .populate("userId", "name email")
-      .populate("items.productId", "name price");
     res.status(200).json({ message: "Danh sách đơn hàng", orders });
   } catch (error) {
     console.error("Lỗi khi lấy danh sách đơn hàng:", error);
@@ -658,6 +656,19 @@ const getAllOrders = async (req, res) => {
     });
   }
 };
+
+const getOrderByID = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id)
+
+    if (!order) {
+      return res.status(404).json({ message: "Đơn hàng không tồn tại" });
+    }
+    res.status(200).json({ message: "Chi tiết đơn hàng", order });
+  }catch{
+    res.status(404).json({ message: "Đơn hàng không tồn tại" });
+  }
+}
 
 const getUserOrders = async (req, res) => {
   try {
@@ -707,4 +718,5 @@ module.exports = {
   updateProduct,
   getProductsByCategoryID,
   deleteProduct,
+  getOrderByID,
 };
