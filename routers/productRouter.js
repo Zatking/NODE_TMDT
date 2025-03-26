@@ -30,7 +30,7 @@ const authMiddleware = require("../middleware/auth");
 
 router.post("/create-product", upload.array("Images", 5), createProduct);
 router.get("/get-product", getProducts);
-router.put("/update-product:id", updateProduct);
+router.put("/update-product/:id", updateProduct);
 router.post("/create-category", CreateCategories);
 router.get("/get-category", getCategories);
 router.post("/create-brand", CreateBrand);

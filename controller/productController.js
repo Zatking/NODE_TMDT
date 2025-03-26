@@ -248,23 +248,33 @@ const getProducts = async (req, res) => {
 
 // Hàm update sản phẩm theo ID
 const updateProduct = async (req, res) => {
- try {
-  const product = await Product.findById(req.params.id);
-  if (!product) {
-    return res.status(404).json({ error: "Sản phẩm không tồn tại" });
-  }
-  // Cập nhật thông tin sản phẩm
-  const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  res.status(200).json({ message: "Cập nhật sản phẩm thành công", product: updatedProduct });
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ error: "Sản phẩm không tồn tại" });
+    }
+
+    const { ProName, Price, RemainQuantity, Description } = req.body;
+
+    // Kiểm tra dữ liệu đầu vào với Zod
+    const validatedData = ProductSchema.safeParse(req.body);
+    if (!validatedData.success) {
+      console.log("Lỗi dữ liệu:", validatedData.error.errors);
+      return res.status(400).json({ error: validatedData.error.errors });
+    }
+
+    product.ProName = ProName;
+    product.Price = Price;
+    product.RemainQuantity = RemainQuantity;
+    product.Description = Description;
+
+    await product.save();
+    res.status(200).json({ message: "Cập nhật sản phẩm thành công", product });
   } catch (error) {
     console.log("Lỗi khi cập nhật sản phẩm: ", error);
     res.status(500).json({ error: "Lỗi khi cập nhật sản phẩm" });
   }
- }
-
+};
 
 const deleteProduct = async (req, res) => {
   try {
@@ -274,14 +284,11 @@ const deleteProduct = async (req, res) => {
     }
     await product.delete();
     res.status(200).json({ message: "Xóa sản phẩm thành công" });
-  }catch (error) {
+  } catch (error) {
     console.log("Lỗi khi xóa sản phẩm: ", error);
     res.status(500).json({ error: "Lỗi khi xóa sản phẩm" });
   }
-}
-
-
-
+};
 
 const deleteState = async (req, res) => {
   try {
@@ -323,9 +330,6 @@ const findProductByName = async (req, res) => {
     res.status(500).json({ error: "Lỗi khi tìm sản phẩm" });
   }
 };
-
-
-
 
 const findProductByPrice = async (req, res) => {
   switch (req.body.Price) {
@@ -372,18 +376,17 @@ const findProductByPrice = async (req, res) => {
 };
 
 const getProductsByCategoryID = async (req, res) => {
- try{
-    const products = await Product.find({Category: req.params.cate});
-    res.status(200).json({products});
-    if(!products){
-      return res.status(404).json({error: "Không tìm thấy sản phẩm"});
+  try {
+    const products = await Product.find({ Category: req.params.cate });
+    res.status(200).json({ products });
+    if (!products) {
+      return res.status(404).json({ error: "Không tìm thấy sản phẩm" });
     }
-    } catch (error) {
+  } catch (error) {
     console.log("Lỗi khi lấy sản phẩm: ", error);
     res.status(500).json({ error: "Lỗi khi lấy sản phẩm" });
- }
-
-}
+  }
+};
 
 const createProductWithImageLink = async (req, res) => {
   try {
@@ -607,7 +610,6 @@ const getCart = async (req, res) => {
   }
 };
 
-
 const orderProduct = async (req, res) => {
   try {
     let {
@@ -708,5 +710,5 @@ module.exports = {
   getUserOrders,
   updateProduct,
   getProductsByCategoryID,
-  deleteProduct
+  deleteProduct,
 };
