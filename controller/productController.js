@@ -50,6 +50,19 @@ const getBrands = async (req, res) => {
   }
 };
 
+const deleteBrandByID = async (req, res) => {
+  try {
+    await Brands.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Xóa thương hiệu thành công" });
+  }
+  catch (error) {
+    console.log("Lỗi khi xóa thương hiệu: ", error);
+    res.status(500).json({ error: "Lỗi khi xóa thương hiệu" });
+  }
+}
+
+
+
 const StateSchema = z.object({
   StateName: z.string().min(1, "Tên trạng thái phải có ít nhất 3 ký tự"),
 });
@@ -323,6 +336,19 @@ const findStatebyID = async (req, res) => {
     res.status(500).json({ error: "Lỗi khi tìm trạng thái" });
   }
 };
+
+const deleteStateByID = async (req, res) => {
+  try{
+    const state = await State.findByIdAndDelete(req.params.id);
+    if (!state) {
+      return res.status(404).json({ error: "Trạng thái không tồn tại" });
+    }
+    res.status(200).json({ message: "Xóa trạng thái thành công" });
+  }catch{
+    console.log("Lỗi khi xóa trạng thái: ", error);
+    res.status(500).json({ error: "Lỗi khi xóa trạng thái" });
+  }
+}
 
 const findProductByName = async (req, res) => {
   try {
@@ -731,4 +757,6 @@ module.exports = {
   deleteProduct,
   getOrderByID,
   deleteCateByID,
+  deleteBrandByID,
+  deleteStateByID
 };

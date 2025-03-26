@@ -26,7 +26,9 @@ const {
   getProductsByCategoryID,
   deleteProduct,
   getOrderByID,
-  deleteCateByID
+  deleteCateByID,
+  deleteBrandByID,
+  deleteStateByID,
 } = require("../controller/productController");
 const authMiddleware = require("../middleware/auth");
 
@@ -54,4 +56,6 @@ router.get("/getProductsByCategory/:cate", getProductsByCategoryID);
 router.delete("/deleteProduct/:id", deleteProduct);
 router.get("/getOrderByID/:id", getOrderByID);
 router.delete("/deleteCateByID/:id", deleteCateByID);
+router.delete("/deleteBrandByID/:id", deleteBrandByID);
+router.delete("/deleteStateByID/:id", deleteStateByID);
 module.exports = router;
